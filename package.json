@@ -1,0 +1,20 @@
+{
+  "name": "public-domain-met-nypl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "matt miller <thisismattmiller@gmail.com> (http://twitter.com/thisismmiller)",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^1.2.0",
+    "express": "^4.14.1",
+    "fast-levenshtein": "^2.0.6",
+    "glob": "^7.1.1",
+    "highland": "^2.10.2",
+    "request": "^2.79.0",
+    "word-overlap": "^2.4.1"
+  }
+}
