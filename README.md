@@ -2,7 +2,9 @@
 Source code for https://twitter.com/PDCutup
 
 Data sources:
+
 https://github.com/NYPL-publicdomain/data-and-utilities
+
 https://github.com/metmuseum/openaccess
 
 build_met_title_lookup.js - transforms the met for use
