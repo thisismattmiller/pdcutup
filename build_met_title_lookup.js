@@ -7,11 +7,17 @@ var counter = 0
 
 var parseCSVRow = function(record,callback){
   parse(record, {comment: '#'}, function(err, output){
+    console.log(record)
     if (!output) {
       callback(null,'')
       return false
     }
     output = output[0]
+    if (!output) {
+      callback(null,'')
+      return false
+    }
+    
     // skip errors
     if (err) {
       callback(null,'')

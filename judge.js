@@ -7,22 +7,22 @@ var app = express()
 
 
 
-var dirToJudge = 'tojudge'
-var dirOutput = 'output'
+var dirToJudge = 'data/tojudge1'
+var dirOutput = 'data/output-batch1'
 
 
 app.use(express.static(dirToJudge))
 
 var tojudge = []
 // load the things to judge
-glob("judged/*", {}, function (er, judgedDirs) {
-	glob("dont/*", {}, function (er, dontDirs) {
+glob("data/judged1/*", {}, function (er, judgedDirs) {
+	glob("data/dont1/*", {}, function (er, dontDirs) {
 
 		judgedDirs = judgedDirs.map((judgedDir) => {
-			return judgedDir.replace('judged/','')
+			return judgedDir.replace('data/judged1/','')
 		})
 		dontDirs = dontDirs.map((dontDir) => {
-			return dontDir.replace('dont/','')
+			return dontDir.replace('data/dont1/','')
 		})
 
 		judgedDirs = judgedDirs.concat(dontDirs)
@@ -45,6 +45,7 @@ glob("judged/*", {}, function (er, judgedDirs) {
 })
 
 var bans = []
+var last10 = []
 
 app.get('/', function (req, res) {
 
@@ -74,30 +75,46 @@ app.get('/', function (req, res) {
 
   	if (req.query.use==='dont'){
   		tojudge.shift()
-  		fs.mkdir(`dont/${req.query.type}`, (err, folder) => {
+  		fs.mkdir(`data/dont1/${req.query.type}`, (err, folder) => {
   			res.redirect('/')
   		})
 
   	}else{
 	  	// make the directory and populate it with the needed data
-	  	fs.mkdir(`judged/${req.query.use}`, (err, folder) => {
-	  		fs.writeFileSync(`judged/${req.query.use}/image.jpg`, fs.readFileSync(`${dirToJudge}/${req.query.use}${req.query.type}`))
-	  		fs.writeFileSync(`judged/${req.query.use}/meta.json`, fs.readFileSync(`${dirOutput}/${req.query.use}/meta.json`))
+	  	fs.mkdir(`data/judged1/${req.query.use}`, (err, folder) => {
+	  		fs.writeFileSync(`data/judged1/${req.query.use}/image.jpg`, fs.readFileSync(`${dirToJudge}/${req.query.use}${req.query.type}`))
+	  		fs.writeFileSync(`data/judged1/${req.query.use}/meta.json`, fs.readFileSync(`${dirOutput}/${req.query.use}/meta.json`))
 	  		tojudge.shift()
 			res.redirect('/')
 	  	})
   	}
   }else{
-
+      if (!tojudge[0]){
+      	tojudge.shift()
+      	res.redirect('/')
+      }
   	  var meta = JSON.parse(fs.readFileSync(`${dirOutput}/${tojudge[0]}/meta.json`))
   	  if (bans.indexOf(meta.metTitle) > -1){
   		tojudge.shift()
-  		fs.mkdir(`dont/${req.query.type}`, (err, folder) => {
+  		fs.mkdir(`data/dont1/${req.query.type}`, (err, folder) => {
   			console.log(meta.metTitle,'is banned')
   			res.redirect('/')
   		})
   	  	return false
   	  }
+  	  // last10.push(${tojudge[0]})
+  	  // if (last10.lenght>10){
+  	  // 	last10.shift()
+  	  // }
+
+
+  	  // var last10Str = ""
+  	  // last10.forEach((l)=>{
+
+  	  // 	last10Str = last10Str + `<a href="">${l}</a>`
+
+  	  // })
+
 	  res.send(`
 			<!DOCTYPE html>
 			<html>
@@ -115,6 +132,8 @@ app.get('/', function (req, res) {
 					    evt = evt || window.event;
 					    console.log(evt.keyCode);
 					    if (evt.keyCode == 27) {
+					    	console.log("Yeahhh")
+					    	console.log("?use=dont&type=${tojudge[0]}")
 					        window.location  = "?use=dont&type=${tojudge[0]}"
 					    }
 					    if (evt.keyCode == 49) {
@@ -123,12 +142,13 @@ app.get('/', function (req, res) {
 					    if (evt.keyCode == 50) {
 					        window.location  = "?use=${tojudge[0]}&type=_pixle_transparent.jpg"
 					    }
+					    evt.preventDefault();
 					};
 
 			  	</script>
 			  	<hr style="clear:both">
 			  	<br>
-			  	<span>${meta.nyplTitle}</span><br>
+			  	<span>${meta.cleTitle}</span><br>
 			  	<span>${meta.metTitle}</span>  <a href="?ban=${meta.metTitle}">BAN</a><br>
 			  	<span>${tojudge.length}</span>
 			  </body>

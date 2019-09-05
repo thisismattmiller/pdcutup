@@ -44,46 +44,46 @@ def createPoly(img):
 
 
 
-dirs = os.walk('output')
+dirs = os.walk('data/output-batch1')
 
 counter = 0
 
 
 for aDir in dirs:
 	print(aDir)
-	if 'met.jpg' in aDir[2] and 'nypl.jpg' in aDir[2]:
+	if 'met.jpg' in aDir[2] and 'cle.jpg' in aDir[2]:
 		print(aDir)
 
 		with open(aDir[0] + '/' + 'meta.json') as jsondata:
 		    meta = json.load(jsondata)
 
-		if os.path.isfile('tojudge3/' + meta['nyplUUID'] + '_pixle_transparent_polygon.jpg'):
-			print(meta['nyplUUID'], 'is already complete')
+		if os.path.isfile('data/tojudge1/' + meta['accessionCle'] + '_pixle_transparent_polygon.jpg'):
+			print(meta['accessionCle'], 'is already complete')
 			continue
 
 		# figure out which image should be the background and export them
 		try:
-			nypl = Image.open(aDir[0] + '/' + 'nypl.jpg')
+			cle = Image.open(aDir[0] + '/' + 'cle.jpg')
 			met = Image.open(aDir[0] + '/' + 'met.jpg')
 		except:
 			print(aDir[0],'images are corrupted')
 			continue
 
-		if nypl.size[1] > met.size[1]:
-			newHeight = nypl.size[1]
+		if cle.size[1] > met.size[1]:
+			newHeight = cle.size[1]
 			newWidth = newHeight * met.size[0] / met.size[1]
 			metOut = met.resize((int(newWidth), int(newHeight)), Image.ANTIALIAS)
 			metOut.save(aDir[0] + '/' +'background.jpg')
-			nypl.save(aDir[0] + '/' + 'foreground.jpg')
+			cle.save(aDir[0] + '/' + 'foreground.jpg')
 		else:
 			newHeight = met.size[1]
-			newWidth = newHeight * nypl.size[0] / nypl.size[1]
-			nyplOut = nypl.resize((int(newWidth), int(newHeight)), Image.ANTIALIAS)
-			nyplOut.save(aDir[0] + '/' + 'background.jpg')
+			newWidth = newHeight * cle.size[0] / cle.size[1]
+			cleOut = cle.resize((int(newWidth), int(newHeight)), Image.ANTIALIAS)
+			cleOut.save(aDir[0] + '/' + 'background.jpg')
 			met.save(aDir[0] + '/' + 'foreground.jpg')
 
 
-		nypl.close()
+		cle.close()
 		met.close()
 
 		# get the most common color and make it transparent
@@ -125,8 +125,9 @@ for aDir in dirs:
 		background.paste(overlay, (0,0), overlay)
 		new = Image.new('RGBA', (overlay.size[0], overlay.size[1]), (255, 255, 255, 255))
 		new.paste(background, (0,0), background)
-		new.convert('RGB')
-		new.save('tojudge3/' + meta['nyplUUID'] + '_pixle_transparent.jpg')
+		new = new.convert('RGB')
+
+		new.save('data/tojudge1/' + meta['accessionCle'] + '_pixle_transparent.jpg')
 
 		# over lap and save out
 		background = Image.open(aDir[0] + '/' + 'background.jpg').convert('RGBA')
@@ -134,8 +135,8 @@ for aDir in dirs:
 		background.paste(overlay, (0,0), overlay)
 		new = Image.new('RGBA', (overlay.size[0], overlay.size[1]), (255, 255, 255, 255))
 		new.paste(background, (0,0), background)
-		new.convert('RGB')
-		new.save('tojudge3/' + meta['nyplUUID'] + '_pixle_transparent_polygon.jpg')
+		new = new.convert('RGB')
+		new.save('data/tojudge1/' + meta['accessionCle'] + '_pixle_transparent_polygon.jpg')
 
 
 
