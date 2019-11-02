@@ -9,7 +9,7 @@
   "author": "matt miller <thisismattmiller@gmail.com> (http://twitter.com/thisismmiller)",
   "license": "ISC",
   "dependencies": {
-    "csv-parse": "^1.2.0",
+    "csv-parse": "^4.6.5",
     "express": "^4.14.1",
     "fast-levenshtein": "^2.0.6",
     "glob": "^7.1.1",
